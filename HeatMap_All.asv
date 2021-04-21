@@ -1,0 +1,121 @@
+% HEATMAP ALL SIGN CELLS
+
+
+clear all
+filename=  [{'MC_data.mat'}, {'TC_data.mat'}]
+
+temp_dff=[];
+tdff=[];
+for file=1:size(filename,2)
+   clear select_data
+   load (filename{file});
+   for exp=1: size(select_data.p,1)
+       frames_stim=select_data.info{exp,1}.frames_stim;
+       for plane=1 :6 %number of planes 
+           I= find(select_data.p{exp,:}{:,plane}<0.001);
+           temp_dff=[temp_dff, select_data.dff{exp,:}{:,plane}(:,I)];
+       end
+       
+       for i= 1:size(frames_stim,2)
+         temp = [mean(temp_dff(frames_stim(i)-9:frames_stim(i)+40,:),3)];
+       end
+temp_dff=[];
+temp(sum(isnan(temp), 2) >= 1, :) = [];%remove nan
+           tdff=[tdff, temp];
+        temp=[];
+        size(tdff)
+   end
+
+end
+
+test=normalize(tdff,1)
+figure; plot(mean(test,2))
+figure; imagesc(tdff')
+
+clear post_stim
+post_stim= mean(tdff(12:20,:),1);
+size(post_stim)
+
+[~, index]= sortrows(post_stim')
+
+
+figure;
+imagesc(tdff(:,index)')
+ylabel('cell ID')
+xlabel('Frame')
+hcb=colorbar
+set(get(hcb,'Title'),'dF/F')
+colormap (gray)
+
+
+% Matrix of data for PCA
+
+my_=[];
+my_matrix= [];
+for file=1:size(filename,2)
+   clear select_data
+   load (filename{file});
+   for exp=1: size(select_data.p,1)
+       for plane=1 :6 %number of planes 
+           clear temp
+           I= find(select_data.p{exp,:}{:,plane}<0.001);
+           temp(:,:)=select_data.pks_locs_w_p{exp,:}{:,plane}([1,3,4],I);
+           temp(4,:)=select_data.AUC{exp,:}{:,plane}(I);
+           temp(5,:)=ones(1, size(I,2))*file;
+           temp(6,:)=select_data.agecode{exp,:}{:,plane}(I);
+           size(I)
+           my_=[my_,temp];
+       end
+   end
+my_matrix=[my_matrix,my_];
+end
+
+size(my_matrix)
+
+
+
+[coeff,score,latent,tsquared,explained, mu] = pca(normalize(my_matrix'));
+
+explained
+
+for i=1:6
+for j=1:6
+figure;
+scatter(score(:,i),score(:,j))
+axis equal
+xlabel([num2str(i),'st Principal Component'])
+ylabel([num2str(j),'nd Principal Component'])
+end
+end
+
+
+i=
+j=2
+
+
+figure;
+I=my_matrix(6,:)==1
+scatter(score(I,i),score(I,j),[],'green')
+hold on
+I=my_matrix(6,:)==2
+scatter(score(I,i),score(I,j),[],'magenta')
+hold on
+I=my_matrix(6,:)==3
+scatter(score(I,i),score(I,j),[],'red')
+axis equal
+xlabel([num2str(i),'st Principal Component'])
+ylabel([num2str(j),'nd Principal Component'])
+
+
+figure;
+I=my_matrix(5,:)==1
+scatter(score(I,i),score(I,j),[],'blue')
+hold on
+I=my_matrix(5,:)==2
+scatter(score(I,i),score(I,j),[],'black')
+axis equal
+xlabel([num2str(i),'st Principal Component'])
+ylabel([num2str(j),'nd Principal Component'])
+
+
+
