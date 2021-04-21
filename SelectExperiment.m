@@ -1,8 +1,8 @@
 
 
 clear all
-filename=  [{'data141020_21.mat'}, {'data180321_25.mat'},{'data201120_15.mat'},{'data121120_12'},...
-    {'data111120_23.mat'}, {'data220620_15.mat'},{'data101120_15.mat'}]
+filename=  [{'data161120_13'},{'data211020_11'},{'data151020_8'},{'data220620_5'},{'data161020_22'},...
+    {'data171120_7.mat'}]
     %MC: [{'data141020_21.mat'}, {'data180321_25.mat'},{'data201120_15.mat'},{'data121120_12'},...
     %{'data111120_23.mat'}, {'data220620_15.mat'},{'data101120_15.mat'}]...
     %TC: [{'data161120_13'},{'data211020_11'},{'data151020_8'},{'data220620_5'},{'data161020_22'},...
@@ -23,6 +23,8 @@ end
  
  
 select_data.info{file,:}=data.info
+select_data.info{file,:}.frames_stim=data.info.frames_stim{I,:}
+select_data.info{file,:}.n_stim=data.info.n_stim(I)
 select_data.dff{file,:}={data.dff{I,:}}
 select_data.p{file,:}={data.p{I,:}}
 select_data.AUC{file,:}={data.AUC{I,:}}
@@ -30,7 +32,7 @@ select_data.agecode{file,:}={data.agecode{:,:}}
 
 end
 
-save(['MC_data.mat'], 'select_data' ) % change name MC or TC!!!
+save(['TC_data.mat'], 'select_data' ) % change name MC or TC!!!
 
 
 
