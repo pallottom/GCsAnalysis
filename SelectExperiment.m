@@ -21,14 +21,15 @@ end
  [~,I]=max(exp_sum)
  
  
-TC_data.info{file,:}=data.info
-TC_data.dff{file,:}={data.dff{I,:}}
-TC_data.p{file,:}={data.p{I,:}}
-TC_data.AUC{file,:}={data.AUC{I,:}}
-TC_data.agecode{file,:}={data.agecode{:,:}}
+select_data.info{file,:}=data.info
+select_data.dff{file,:}={data.dff{I,:}}
+select_data.p{file,:}={data.p{I,:}}
+select_data.AUC{file,:}={data.AUC{I,:}}
+select_data.agecode{file,:}={data.agecode{:,:}}
 
 end
 
+save(['MC_data.mat'], 'select_data' ) % change name MC or TC!!!
 
 
 
